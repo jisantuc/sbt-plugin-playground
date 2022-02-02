@@ -5,7 +5,7 @@ sbtPlugin := true
 
 addCommandAlias(
   "ci-test",
-  ";scalafmtCheckAll; scalafmtSbtCheck; +test; +publishLocal; sbt-source-extract/scripted"
+  ";scalafmtCheckAll; scalafmtSbtCheck; +test; +publishLocal; scripted"
 )
 
 // ScalaTest
