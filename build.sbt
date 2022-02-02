@@ -1,29 +1,34 @@
-
 name := """sbt-source-extract"""
-organization := "io.github.jisantuc"
 version := "0.1-SNAPSHOT"
 
 sbtPlugin := true
 
-// choose a test framework
+addCommandAlias(
+  "ci-test",
+  ";scalafmtCheckAll; scalafmtSbtCheck; +test; +publishLocal; sbt-source-extract/scripted"
+)
 
 // ScalaTest
 libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.9" % Test
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.9" % Test
 
-inThisBuild(List(
-  organization := "io.github.jisantuc",
-  homepage := Some(url("https://github.com/jisantuc/sbt-plugin-playground")),
-  licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
-  developers := List(
-    Developer(
-      "jisantuc",
-      "James Santucci",
-      "james.santucci@47deg.com",
-      url("https://github.com/jisantuc")
+inThisBuild(
+  List(
+    organization := "io.github.jisantuc",
+    homepage := Some(url("https://github.com/jisantuc/sbt-plugin-playground")),
+    licenses := List(
+      "Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")
+    ),
+    developers := List(
+      Developer(
+        "jisantuc",
+        "James Santucci",
+        "james.santucci@47deg.com",
+        url("https://github.com/jisantuc")
+      )
     )
   )
-))
+)
 
 (console / initialCommands) := """import io.github.jisantuc.sbtse._"""
 
@@ -32,19 +37,6 @@ enablePlugins(ScriptedPlugin, SbtPlugin)
 scriptedLaunchOpts ++=
   Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
 
-ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
-ThisBuild / githubWorkflowPublishTargetBranches :=
-  Seq(RefPredicate.StartsWith(Ref.Tag("v")))
-
-ThisBuild / githubWorkflowPublish := Seq(
-  WorkflowStep.Sbt(
-    List("ci-release"),
-    env = Map(
-      "PGP_PASSPHRASE" -> "${{ secrets.PGP_PASSPHRASE }}",
-      "PGP_SECRET" -> "${{ secrets.PGP_SECRET }}",
-      "SONATYPE_PASSWORD" -> "${{ secrets.SONATYPE_PASSWORD }}",
-      "SONATYPE_USERNAME" -> "${{ secrets.SONATYPE_USERNAME }}"
-    )
-  )
+ThisBuild / githubWorkflowBuild := Seq(
+  WorkflowStep.Sbt(List("ci-test"))
 )
-

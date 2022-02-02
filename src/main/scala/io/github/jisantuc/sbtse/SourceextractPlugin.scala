@@ -12,7 +12,8 @@ object SourceExtractPlugin extends AutoPlugin {
   override def requires = JvmPlugin
 
   object autoImport {
-    val randomGenerator = SettingKey[Random]("random-generator", "random number generator")
+    val randomGenerator =
+      SettingKey[Random]("random-generator", "random number generator")
     val randomNumber = TaskKey[Int]("random-number", "generate a random number")
   }
 
