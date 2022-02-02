@@ -1,5 +1,5 @@
 package io.github.jisantuc.sbtse
 
-class SourceextractTest {
+class SourceExtractTest {
   // write tests with your preferred framework
 }

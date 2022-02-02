@@ -4,21 +4,23 @@ import sbt._
 import sbt.Keys._
 import sbt.plugins.JvmPlugin
 
-object SourceextractPlugin extends AutoPlugin {
+import scala.util.Random
+
+object SourceExtractPlugin extends AutoPlugin {
 
   override def trigger = allRequirements
   override def requires = JvmPlugin
 
   object autoImport {
-    val exampleSetting = settingKey[String]("A setting that is automatically imported to the build")
-    val exampleTask = taskKey[String]("A task that is automatically imported to the build")
+    val randomGenerator = SettingKey[Random]("random-generator", "random number generator")
+    val randomNumber = TaskKey[Int]("random-number", "generate a random number")
   }
 
   import autoImport._
 
   override lazy val projectSettings = Seq(
-    exampleSetting := "just an example",
-    exampleTask := "computed from example setting: " + exampleSetting.value
+    randomGenerator := new Random(),
+    randomNumber := randomGenerator.value.nextInt(100)
   )
 
   override lazy val buildSettings = Seq()
