@@ -40,3 +40,5 @@ scriptedLaunchOpts ++=
 ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(List("ci-test"))
 )
+
+ThisBuild / githubWorkflowPublishTargetBranches := Seq.empty
