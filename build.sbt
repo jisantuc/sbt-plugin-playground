@@ -33,7 +33,7 @@ inThisBuild(List(
   )
 ))
 
-initialCommands in console := """import io.github.jisantuc.sbtse._"""
+(console / initialCommands) := """import io.github.jisantuc.sbtse._"""
 
 enablePlugins(ScriptedPlugin)
 // set up 'scripted; sbt plugin for testing sbt plugins
