@@ -47,9 +47,10 @@ class Extracter {
 
   // Same settings as
   // https://github.com/scala-exercises/sbt-exercise/blob/v0.6.7/compiler/src/main/scala/org/scalaexercises/exercises/compiler/SourceTextExtraction.scal
-  // and
-  // https://github.com/scala-exercises/sbt-exercise/blob/v0.6.7/compiler/src/main/scala/org/scalaexercises/exercises/compiler/CompilerSettings.scala
-  // but with a vanilla Global as the embeddedDefaults type param
+  // except usejavacp.value is set to false.
+  // that setting controls whether to "Utilize the java.class.path in classpath resolution."
+  // clearly that was interacting with _something_ poorly (buildinfo plugin? I don't know!)
+  // but it'll probably be a bit before I understand what.
   val defaultSettings = new Settings {
     embeddedDefaults[Global.type]
     Yrangepos.value = true
