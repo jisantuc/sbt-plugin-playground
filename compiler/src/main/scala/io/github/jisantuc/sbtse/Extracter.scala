@@ -53,7 +53,7 @@ class Extracter {
   val defaultSettings = new Settings {
     embeddedDefaults[Global.type]
     Yrangepos.value = true
-    usejavacp.value = true
+    usejavacp.value = false
 
     bootclasspath.value = paths.mkString(File.pathSeparator)
     classpath.value = paths.mkString(File.pathSeparator)
