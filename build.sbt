@@ -8,9 +8,15 @@ addCommandAlias(
   ";scalafmtCheckAll; scalafmtSbtCheck; +test; +publishLocal; scripted"
 )
 
-// ScalaTest
-libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.9" % Test
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.9" % Test
+lazy val root = project.aggregate(compiler, `sbt-source-extract`)
+
+lazy val dependencies = Seq(
+  "org.scalactic" %% "scalactic" % "3.2.9" % Test,
+  "org.scalatest" %% "scalatest" % "3.2.9" % Test,
+  "org.typelevel" %% "cats-core" % "2.4.0"
+)
+
+lazy val compilerClasspath = TaskKey[Classpath]("compiler-classpath")
 
 inThisBuild(
   List(
@@ -23,7 +29,7 @@ inThisBuild(
       Developer(
         "jisantuc",
         "James Santucci",
-        "james.santucci@47deg.com",
+        "james.santucci@47d1eg.com",
         url("https://github.com/jisantuc")
       )
     )
@@ -32,13 +38,33 @@ inThisBuild(
 
 (console / initialCommands) := """import io.github.jisantuc.sbtse._"""
 
-enablePlugins(ScriptedPlugin, SbtPlugin)
-// set up 'scripted; sbt plugin for testing sbt plugins
-scriptedLaunchOpts ++=
-  Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
-
 ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(List("ci-test"))
 )
 
 ThisBuild / githubWorkflowPublishTargetBranches := Seq.empty
+
+lazy val `sbt-source-extract` = (project in file("sbtse"))
+  .settings(
+    compilerClasspath := { (compiler / Compile / fullClasspath) }.value,
+    buildInfoObject := "Meta",
+    buildInfoPackage := "io.github.jisantuc.sbtse",
+    buildInfoKeys := Seq(
+      version,
+      BuildInfoKey.map(compilerClasspath) { case (_, classFiles) ⇒
+        ("compilerClasspath", classFiles.map(_.data))
+      }
+    ),
+    libraryDependencies ++= dependencies,
+    // set up 'scripted; sbt plugin for testing sbt plugins
+    scriptedLaunchOpts ++=
+      Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
+  )
+  .dependsOn(compiler)
+  .enablePlugins(BuildInfoPlugin, SbtPlugin, ScriptedPlugin)
+
+lazy val compiler = (project in file("compiler"))
+  .settings(
+    libraryDependencies ++= dependencies
+  )
+  .enablePlugins(BuildInfoPlugin, SbtPlugin)
