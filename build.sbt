@@ -44,7 +44,7 @@ ThisBuild / githubWorkflowBuild := Seq(
 
 ThisBuild / githubWorkflowPublishTargetBranches := Seq.empty
 
-lazy val `sbt-source-extract` = (project in file("."))
+lazy val `sbt-source-extract` = (project in file("sbtse"))
   .settings(
     compilerClasspath := { (compiler / Compile / fullClasspath) }.value,
     buildInfoObject := "Meta",
@@ -61,6 +61,7 @@ lazy val `sbt-source-extract` = (project in file("."))
       Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
   )
   .dependsOn(compiler)
+  .enablePlugins(BuildInfoPlugin, SbtPlugin, ScriptedPlugin)
 
 lazy val compiler = (project in file("compiler"))
   .settings(
